@@ -34,4 +34,6 @@ Preview: the shortcut is signed for sharing; its helper is not notarized. [Build
 - USB-dongle headsets do not get Bluetooth priority.
 - Older macOS versions, physical Intel Macs, and first-run import still need testing.
 
-[![Support LidMic on Ko-fi](https://img.shields.io/badge/Support%20LidMic-Ko--fi-FF7421?style=flat&logo=kofi&logoColor=white)](https://ko-fi.com/twyzeas)
+---
+
+<a href="https://ko-fi.com/twyzeas"><img src="assets/ko-fi.svg" alt="" width="25" height="20" align="absmiddle"> Support me on Ko-fi</a>
