@@ -4,10 +4,8 @@
 [![Latest release](https://img.shields.io/github/v/release/twyzeas/lidmic)](https://github.com/twyzeas/lidmic/releases/latest)
 [![License](https://img.shields.io/github/license/twyzeas/lidmic)](LICENSE)
 ![macOS](https://img.shields.io/badge/macOS-13%2B-blue)
-![Apple Shortcuts](https://img.shields.io/badge/Apple-Shortcuts-purple)
-![Preview](https://img.shields.io/badge/status-preview-orange)
 
-Automatically switch between your MacBook mic, iPhone Continuity mic, and Bluetooth headset.
+Automatically use your iPhone as your MacBook’s microphone through Continuity Camera when the lid is closed.
 
 [![Download Shortcut for macOS](assets/download-shortcut.svg)](https://github.com/twyzeas/lidmic/releases/latest)
 
