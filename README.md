@@ -24,7 +24,7 @@ A macOS automation that switches the default microphone to your iPhone’s Conti
 
 Run it again for **Status**, **Disable**, or **Uninstall**. To remove it, choose **Uninstall** before deleting the shortcut. Disabling or uninstalling leaves your current microphone selected.
 
-Preview: the shortcut is signed for sharing; its helper is not notarized. [Testing and release notes](BUILDING.md).
+Preview: the shortcut is signed for sharing; its helper is not notarized. [Build and testing details](BUILDING.md).
 
 ## Compatibility
 
