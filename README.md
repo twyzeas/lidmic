@@ -7,7 +7,7 @@
 
 Automatically use your iPhone as your MacBook’s microphone through Continuity Camera when the lid is closed.
 
-[![Download Shortcut for macOS](assets/download-shortcut.svg)](https://github.com/twyzeas/lidmic/releases/latest)
+<a href="https://github.com/twyzeas/lidmic/releases/latest"><img src="assets/download-shortcut.svg" alt="Download Shortcut for macOS" width="186" height="60"></a>
 
 ## Features
 
