@@ -43,3 +43,7 @@ Before releasing, manually check import, Enable, lid switching, Bluetooth priori
 - Startup entry: `~/Library/LaunchAgents/local.lid-microphone.plist`
 
 Keep these legacy identifiers stable so newer shortcuts can upgrade or uninstall earlier helpers. Disable removes the startup entry; Uninstall also removes the installation folder. Both leave the current microphone selected. A zero-byte `.lid-microphone.lock` file remains in Application Support to serialize setup operations.
+
+## Repository checks
+
+Pull requests run the build and tests on macOS, plus CodeQL scans for Swift, Python, and GitHub Actions. CodeQL also runs weekly; Dependabot checks workflow action updates weekly. Actions are pinned to commit hashes. CI uses an ad-hoc helper signature and does not sign shortcuts for distribution or access release signing credentials.

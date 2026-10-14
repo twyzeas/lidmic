@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build and test
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build universal helper and unsigned shortcut
+        run: bash source/build.sh
+      - name: Test selection, installation, and package integrity
+        run: python3 source/test.py
+      - name: Test shortcut menu
+        run: python3 source/test_shortcut.py
+      - name: Test event handling
+        run: python3 source/test_watcher.py
