@@ -5,17 +5,15 @@
 [![License](https://img.shields.io/github/license/twyzeas/lidmic)](LICENSE)
 ![macOS](https://img.shields.io/badge/macOS-13%2B-blue)
 
-Automatically use your iPhone as your MacBook’s microphone through Continuity Camera when the lid is closed.
+A macOS automation that switches the default microphone to your iPhone’s Continuity Camera while the MacBook’s lid is closed.
 
 <a href="https://github.com/twyzeas/lidmic/releases/latest"><img src="assets/download-shortcut.svg" alt="Download Shortcut for macOS" width="186" height="60"></a>
 
 ## Features
 
-- Bluetooth headset connected → use its mic.
-- Otherwise, lid closed → use the iPhone mic through Continuity Camera.
-- Otherwise, lid open → use the MacBook mic.
-- Preferred mic unavailable? Keep the current mic and retry.
-- Runs in the background and starts at login. No audio recording.
+- Switches the default microphone to your iPhone’s Continuity Camera when the MacBook is in clamshell mode.
+- Restores the MacBook’s built-in microphone when the lid is reopened.
+- AirPods and other Bluetooth headsets take priority when connected.
 
 ## Install
 
