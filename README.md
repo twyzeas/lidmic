@@ -33,3 +33,5 @@ Preview: the shortcut is signed for sharing; its helper is not notarized. [Build
 - Bluetooth and Bluetooth LE headsets, including AirPods.
 - USB-dongle headsets do not get Bluetooth priority.
 - Older macOS versions, physical Intel Macs, and first-run import still need testing.
+
+[![Support LidMic on Ko-fi](https://img.shields.io/badge/Support%20LidMic-Ko--fi-FF7421?style=flat&logo=kofi&logoColor=white)](https://ko-fi.com/twyzeas)
