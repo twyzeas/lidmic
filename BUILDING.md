@@ -27,7 +27,7 @@ PYTHON
 shasum -a 256 lidmic-0.2.0.zip > SHA256SUMS
 ```
 
-Update the version in the ZIP filename for each release. Publish the ZIP as the user download; keep the shortcut's readable filename inside it because macOS uses that name during import. Release history lives in [GitHub Releases](https://github.com/twyzeas/lidmic/releases).
+Update the version in the ZIP filename for each release. Attach the ZIP and `SHA256SUMS` to the matching GitHub release, not the source repository. Users can verify the download with `shasum -a 256 -c SHA256SUMS` from the folder containing both files. Publish the ZIP as the user download; keep the shortcut's readable filename inside it because macOS uses that name during import. Release history lives in [GitHub Releases](https://github.com/twyzeas/lidmic/releases).
 
 Shortcut signing sends the file to Apple for sharing validation. It does **not** notarize the helper. The helper is ad-hoc signed by default; `SIGNING_IDENTITY` selects a Developer ID identity when building. Developer ID signing and notarization require a separate release workflow.
 
