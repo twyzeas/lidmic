@@ -1,0 +1,20 @@
+{
+  "mode": "read-only live lid events vs two-second reference timer",
+  "samples": 4,
+  "event_lead_ms": [
+    208.4,
+    1702.6,
+    1417.4,
+    1663.8
+  ],
+  "average_event_lead_ms": 1248.05,
+  "lid_evaluation_ms": [
+    1.8,
+    1.18,
+    1.59,
+    1.17
+  ],
+  "actual_microphone_switching_measured": false,
+  "audio_readiness_measured": false,
+  "fallback_seconds": 10
+}

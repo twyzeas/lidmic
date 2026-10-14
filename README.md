@@ -17,12 +17,12 @@ A macOS automation that switches the default microphone to your iPhone’s Conti
 
 ## Install
 
-1. Download and double-click the `.shortcut` file to import it.
+1. Download and unzip `lidmic-0.2.0.zip`, then open **LidMic — Auto Switch Mic.shortcut** to import it.
 2. In **Shortcuts → Settings → Advanced**, enable **Allow Running Scripts**.
-3. Run **LidMic** and choose **Enable**.
+3. Run **LidMic — Auto Switch Mic** and choose **Enable**.
 4. Set your calling apps to use the **system-default microphone**.
 
-Run it again for **Status**, **Disable**, or **Uninstall**. To remove it, choose **Uninstall** before deleting the shortcut.
+Run it again for **Status**, **Disable**, or **Uninstall**. To remove it, choose **Uninstall** before deleting the shortcut. Disabling or uninstalling leaves your current microphone selected.
 
 Preview: the shortcut is signed for sharing; its helper is not notarized. [Testing and release notes](BUILDING.md).
 

@@ -38,7 +38,7 @@ func loaded() throws -> Bool { try launch(["print", "\(domain)/\(label)"]).0 == 
 func stop() throws {
     if try loaded() {
         let result = try launch(["bootout", "\(domain)/\(label)"])
-        guard result.0 == 0 else { throw failure("Could not stop helper: \(result.1)") }
+        guard result.0 == 0 else { throw failure("Could not stop microphone switching. Try again.") }
     }
 }
 func failure(_ message: String) -> NSError { NSError(domain: label, code: 1, userInfo: [NSLocalizedDescriptionKey: message]) }
@@ -50,7 +50,7 @@ func configure() throws -> Preferences {
         if let existing, devices.contains(where: { $0.uid == existing }) { continue }
         guard devices.count > 1 else { continue }
         let names = devices.enumerated().map { "\($0.offset + 1). \($0.element.name)" }
-        let prompt = isClosed ? "Choose the Continuity microphone to use when the lid is closed." : "Choose the built-in microphone to use when the lid is open."
+        let prompt = isClosed ? "Choose your iPhone microphone." : "Choose your MacBook microphone."
         let script = """
         on run argv
             set selection to choose from list (items 2 thru -1 of argv) with prompt (item 1 of argv)
@@ -59,7 +59,7 @@ func configure() throws -> Preferences {
         end run
         """
         let result = try command("/usr/bin/osascript", ["-e", script, prompt] + names)
-        guard result.0 == 0, let index = names.firstIndex(of: result.1.trimmingCharacters(in: .whitespacesAndNewlines)) else { throw failure("Setup cancelled; existing automation unchanged.") }
+        guard result.0 == 0, let index = names.firstIndex(of: result.1.trimmingCharacters(in: .whitespacesAndNewlines)) else { throw failure("Setup cancelled.") }
         if isClosed { prefs.continuityUID = devices[index].uid } else { prefs.internalUID = devices[index].uid }
     }
     return prefs
@@ -79,40 +79,44 @@ func enable() throws {
     try payload.write(to: staged, options: .atomic)
     try fm.setAttributes([.posixPermissions: 0o700], ofItemAtPath: staged.path)
     let validation = try command("/usr/bin/codesign", ["--verify", "--strict", staged.path])
-    guard validation.0 == 0 else { try? fm.removeItem(at: staged); throw failure("Embedded helper signature check failed.") }
+    guard validation.0 == 0 else { try? fm.removeItem(at: staged); throw failure("Could not verify the download. Download the shortcut again.") }
     try stop()
-    guard rename(staged.path, executable.path) == 0 else { throw failure("Could not install helper; run Enable again.") }
+    guard rename(staged.path, executable.path) == 0 else { throw failure("Could not install. Try Enable again.") }
     try JSONEncoder().encode(prefs).write(to: config, options: .atomic)
     let plist: [String: Any] = ["Label": label, "ProgramArguments": [executable.path, "--watch"], "RunAtLoad": true, "KeepAlive": true, "ThrottleInterval": 10, "ProcessType": "Background"]
     try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0).write(to: agent, options: .atomic)
     _ = try launch(["enable", "\(domain)/\(label)"])
     let result = try launch(["bootstrap", domain, agent.path])
-    guard result.0 == 0, try loaded() else { throw failure("Installed, but macOS could not start the helper. Run Enable again. \(result.1)") }
-    print("Enabled. Bluetooth microphones take priority. Otherwise: closed lid → Continuity microphone; open lid → built-in microphone. Switching runs every two seconds and at login.")
+    guard result.0 == 0, try loaded() else { throw failure("Could not start microphone switching. Try Enable again.") }
+    print("Microphone switching enabled.")
 }
 let action = CommandLine.arguments.dropFirst().first ?? "--status"
 do {
-    if action == "--watch" {
-        while true { _ = apply(); Thread.sleep(forTimeInterval: 2) }
+    if action == "--watch" || action == "--measure" {
+        let watcher = InputWatcher(measure: action == "--measure")
+        watcher.startWatching()
+        withExtendedLifetime(watcher) { RunLoop.main.run() }
     } else if action == "--status" {
-        print(try loaded() ? "Automation: enabled." : "Automation: disabled.")
-        print(apply(dryRun: true).0)
+        print(try loaded() ? "Microphone switching enabled." : "Microphone switching disabled.")
+        if let id = current(), let device = inputs().first(where: { $0.id == id }) {
+            print("Microphone: \(device.name)")
+        }
     } else {
         // Serialize lifecycle operations, including concurrent shortcut invocations.
         let support = base.deletingLastPathComponent()
         try fm.createDirectory(at: support, withIntermediateDirectories: true)
         let lock = support.appendingPathComponent(".lid-microphone.lock")
         let fd = open(lock.path, O_CREAT | O_RDWR | O_NOFOLLOW, 0o600)
-        guard fd >= 0 else { throw failure("Cannot open setup lock.") }
+        guard fd >= 0 else { throw failure("Could not start setup. Try again.") }
         defer { close(fd) }
-        guard flock(fd, LOCK_EX | LOCK_NB) == 0 else { throw failure("Another setup operation is running. Try again shortly.") }
+        guard flock(fd, LOCK_EX | LOCK_NB) == 0 else { throw failure("Setup is already running. Try again shortly.") }
         switch action {
         case "--enable": try enable()
         case "--disable", "--uninstall":
             try stop()
             if fm.fileExists(atPath: agent.path) { try fm.removeItem(at: agent) }
             if action == "--uninstall", fm.fileExists(atPath: base.path) { try fm.removeItem(at: base) }
-            print(action == "--uninstall" ? "Uninstalled. You may now delete the shortcut." : "Disabled. Run Enable to resume.")
+            print(action == "--uninstall" ? "Microphone switching uninstalled. You can delete this shortcut. Change your input in System Settings → Sound if needed." : "Microphone switching disabled. Change your input in System Settings → Sound if needed.")
         default: throw failure("Unknown operation.")
         }
     }

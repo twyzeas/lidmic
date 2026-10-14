@@ -46,14 +46,17 @@ func selectInput(_ devices: [InputDevice], lidClosed: Bool?, currentID: AudioObj
     if let chosen { return candidates.first { $0.uid == chosen } }
     return candidates.count == 1 ? candidates.first : nil
 }
-func inputs() -> [InputDevice] {
+func audioDeviceIDs() -> [AudioObjectID] {
     var a = address(kAudioHardwarePropertyDevices)
     var size: UInt32 = 0
     guard AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &a, 0, nil, &size) == noErr, size > 0 else { return [] }
     var devices = [AudioObjectID](repeating: 0, count: Int(size) / MemoryLayout<AudioObjectID>.size)
     let result = devices.withUnsafeMutableBytes { AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &a, 0, nil, &size, $0.baseAddress!) }
     guard result == noErr else { return [] }
-    return devices.compactMap { id in
+    return Array(devices.prefix(Int(size) / MemoryLayout<AudioObjectID>.size))
+}
+func inputs() -> [InputDevice] {
+    audioDeviceIDs().compactMap { id in
         var streams = address(kAudioDevicePropertyStreams, kAudioObjectPropertyScopeInput)
         var bytes: UInt32 = 0
         guard AudioObjectGetPropertyDataSize(id, &streams, 0, nil, &bytes) == noErr, bytes > 0,

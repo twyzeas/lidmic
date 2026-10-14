@@ -17,11 +17,12 @@ actual=$(/usr/bin/shasum -a 256 "$stage/helper")
 "$stage/helper" --'''
 def apple_string(s): return '"' + s.replace('\\','\\\\').replace('"','\\"').replace('\n','\\n') + '"'
 script = '''on run {input, parameters}
-set selection to choose from list {"Status", "Enable", "Disable", "Uninstall"} with title "LidMic" with prompt "Bluetooth first. Otherwise: lid closed → iPhone; lid open → built-in microphone." default items {"Enable"}
-if selection is false then return
-set operation to item 1 of selection
+local chosenAction, operation, resultText
+set chosenAction to choose from list {"Status", "Enable", "Disable", "Uninstall"} with title "LidMic — Auto Switch Mic" with prompt "Choose an action." default items {"Enable"}
+if chosenAction is false then return
+set operation to item 1 of chosenAction
 if operation is "Uninstall" then
-    display dialog "Remove the background helper and its settings?" buttons {"Cancel", "Uninstall"} default button "Cancel" with title "LidMic"
+    display dialog "Uninstall microphone switching?" buttons {"Cancel", "Uninstall"} default button "Cancel" with title "LidMic — Auto Switch Mic"
 end if
 if operation is "Status" then set operation to "status"
 if operation is "Enable" then set operation to "enable"
@@ -29,14 +30,14 @@ if operation is "Disable" then set operation to "disable"
 if operation is "Uninstall" then set operation to "uninstall"
 try
     set resultText to do shell script (''' + apple_string(shell) + ''' & operation)
-    display dialog resultText buttons {"OK"} default button "OK" with title "LidMic"
+    display dialog resultText buttons {"OK"} default button "OK" with title "LidMic — Auto Switch Mic"
 on error errorText number errorNumber
-    if errorNumber is not -128 then display dialog errorText buttons {"OK"} default button "OK" with title "LidMic — needs attention"
+    if errorNumber is not -128 then display dialog errorText buttons {"OK"} default button "OK" with title "LidMic — Auto Switch Mic"
 end try
 end run
 '''
 (root / 'build/shortcut.applescript').write_text(script)
-shortcut = {'WFWorkflowClientVersion':'2600','WFWorkflowMinimumClientVersion':900,'WFWorkflowName':'LidMic','WFWorkflowIcon':{'WFWorkflowIconStartColor':4282601983,'WFWorkflowIconGlyphNumber':61440},'WFWorkflowTypes':['MenuBar'],'WFWorkflowInputContentItemClasses':[], 'WFWorkflowActions':[{'WFWorkflowActionIdentifier':'is.workflow.actions.runapplescript','WFWorkflowActionParameters':{'Script':script}}]}
+shortcut = {'WFWorkflowClientVersion':'2600','WFWorkflowMinimumClientVersion':900,'WFWorkflowName':'LidMic — Auto Switch Mic','WFWorkflowIcon':{'WFWorkflowIconStartColor':4282601983,'WFWorkflowIconGlyphNumber':61440},'WFWorkflowTypes':['MenuBar'],'WFWorkflowInputContentItemClasses':[], 'WFWorkflowActions':[{'WFWorkflowActionIdentifier':'is.workflow.actions.runapplescript','WFWorkflowActionParameters':{'Script':script}}]}
 (root / '../LidMic.unsigned.shortcut').write_bytes(plistlib.dumps(shortcut))
 (root / 'build/payload.sha256').write_text(digest+'\n')
 print('Built self-contained shortcut; embedded universal helper SHA-256:', digest)
